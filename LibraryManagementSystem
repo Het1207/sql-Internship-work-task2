@@ -1,0 +1,118 @@
+INSERT INTO Librarian (Name, UserName, Password, Email, Phone, Role) VALUES
+('Alice Smith', 'asmith', 'pass123', 'alice.s@library.com', '555-1001', 'Head Librarian'),
+('Bob Johnson', 'bjohnson', 'secure456', 'bob.j@library.com', '555-1002', 'Lending Desk'),
+('Charlie Brown', 'cbrown', 'admin789', 'charlie.b@library.com', '555-1003', 'Inventory Manager'),
+('Diana Prince', 'dprince', 'lasso2024', 'diana.p@library.com', '555-1004', 'Reference Specialist'),
+('Ethan Hunt', 'ehunt', 'missionimp', 'ethan.h@library.com', '555-1005', 'System Administrator');
+
+INSERT INTO Member (First_Name, Last_Name, Email, Address, DOB, Membership_Date) VALUES
+('Grace', 'Hopper', 'grace.h@email.com', '123 Algorithm Way, Codeville', '1906-12-09', '2023-01-15'),
+('Alan', 'Turing', 'alan.t@email.com', '456 Enigma Ave, Bletchley', '1912-06-23', '2023-03-22'),
+('Ada', 'Lovelace', 'ada.l@email.com', '789 Analytical Dr, London', '1815-12-10', '2023-05-10'),
+('Claude', 'Shannon', 'claude.s@email.com', '101 Information Blvd, Bell Labs', '1916-04-30', '2023-07-01'),
+('Marie', 'Curie', 'marie.c@email.com', '102 Radium St, Paris', '1867-11-07', '2023-09-18');
+
+INSERT INTO Author (Name) VALUES
+('J.R.R. Tolkien'),
+('Agatha Christie'),
+('Isaac Asimov'),
+('Jane Austen'),
+('George Orwell');
+
+INSERT INTO Publisher (Name, Address) VALUES
+('HarperCollins', 'New York, NY'),
+('Penguin Random House', 'London, UK'),
+('Vintage Books', 'New York, NY'),
+('Scribner', 'New York, NY'),
+('Houghton Mifflin Harcourt', 'Boston, MA');
+
+INSERT INTO Category (Category_Name) VALUES
+('Fiction'),
+('Mystery'),
+('Science Fiction'),
+('Fantasy'),
+('Classic Literature');
+
+INSERT INTO Book (Title, ISBN, Year, Price, Category_ID, Publisher_ID) VALUES
+('The Hobbit', '9780547928227', 1937, 15.50, 4, 5),
+('Murder on the Orient Express', '9780007119318', 1934, 12.00, 2, 1),
+('I, Robot', '9780553382563', 1950, 18.75, 3, 2),
+('Pride and Prejudice', '9780141439518', 1813, 9.99, 5, 2),
+('1984', '9780451524935', 1949, 14.25, 1, 3);
+
+INSERT INTO Book_Author (Book_ID, Author_ID) VALUES
+(1, 1),  -- The Hobbit by J.R.R. Tolkien
+(2, 2),  -- Murder on the Orient Express by Agatha Christie
+(3, 3),  -- I, Robot by Isaac Asimov
+(4, 4),  -- Pride and Prejudice by Jane Austen
+(5, 5);  -- 1984 by George Orwell
+
+
+/*SELECTING THE DATA*/
+
+-- Retrieve all data from the Librarian table
+SELECT * FROM Librarian;
+
+-- Retrieve all data from the Member table
+SELECT * FROM Member;
+
+-- Retrieve all data from the Book table
+SELECT * FROM Book;
+
+-- Retrieve all data from the Borrow table
+SELECT * FROM Borrow;
+
+-- 1. Find all books in the 'Science Fiction' category (assuming Category_ID = 3)
+SELECT Book_ID, Title, Price FROM Book
+WHERE Category_ID = 3;
+
+-- 2. Find all members who joined in the year 2023
+SELECT First_Name, Last_Name, Membership_Date FROM Member
+WHERE Membership_Date BETWEEN '2023-01-01' AND '2023-12-31';
+
+-- 3. Find all current, unreturned borrowed books (Return_Date is NULL)
+SELECT Issue_ID, Member_ID, Book_ID, Due_Date FROM Borrow
+WHERE Return_Date IS NULL;
+
+-- 4. Find librarians who are not 'Head Librarian'
+SELECT Name, Role FROM Librarian
+WHERE Role <> 'Head Librarian';
+
+/*UPDATE QUERIES*/
+
+UPDATE Book
+SET Price = 16.50
+WHERE Title = '1984';
+
+-- Update the address for the member with ID 3 (Ada Lovelace)
+UPDATE Member
+SET Address = '500 Computation Drive, London'
+WHERE Member_ID = 3;
+
+
+-- Update the role for the librarian with ID 2 (Bob Johnson)
+UPDATE Librarian
+SET Role = 'Supervisor'
+WHERE Librarian_ID = 2;
+
+-- Record the return of Book ID 5 by Member ID 3, returned today (November 16, 2025)
+UPDATE Borrow
+SET Return_Date = '2025-11-16'
+WHERE Member_ID = 3 AND Book_ID = 5 AND Return_Date IS NULL;
+
+
+-- Change the category name 'Classic Literature' to 'Literary Classics'
+UPDATE Category
+SET Category_Name = 'Literary Classics'
+WHERE Category_Name = 'Classic Literature';
+
+
+/*DELETE QUERIES*/
+
+-- Step 1: Delete all books published by the publisher with ID 5 (Houghton Mifflin Harcourt)
+DELETE FROM Book
+WHERE Publisher_ID = 5;
+
+-- Step 2: Now that the dependent books are gone, delete the Publisher
+DELETE FROM Publisher
+WHERE Publisher_ID = 5;
